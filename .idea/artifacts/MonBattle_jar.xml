@@ -1,0 +1,10 @@
+<component name="ArtifactManager">
+  <artifact type="jar" name="MonBattle:jar">
+    <output-path>$PROJECT_DIR$/out/artifacts/MonBattle_jar</output-path>
+    <root id="archive" name="MonBattle.jar">
+      <element id="directory" name="META-INF">
+        <element id="file-copy" path="$PROJECT_DIR$/src/main/resources/META-INF/MANIFEST.MF" />
+      </element>
+    </root>
+  </artifact>
+</component>
