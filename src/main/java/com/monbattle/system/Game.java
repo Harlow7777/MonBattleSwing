@@ -2,6 +2,8 @@ package com.monbattle.system;
 
 import com.monbattle.combat.Battle;
 import com.monbattle.Util.Util;
+import com.monbattle.display.GameWindow;
+import com.monbattle.display.SetupWindow;
 import com.monbattle.enums.Action;
 import com.monbattle.enums.Environment;
 import com.monbattle.enums.State;
@@ -14,15 +16,16 @@ import com.monbattle.shop.Shop;
 
 import java.io.*;
 import java.util.*;
+import java.util.List;
 
 @Data
 public class Game {
 
-    private Player player = new Player();
-    private MonLibrary lib = new MonLibrary();
+    public Player player = new Player();
     private Environment currEnv;
-    private State currState;
+    public State currState;
     private Monster leadMon;
+    private String name = "";
 
     /**
      * Provide opening prompts, setup and initialize game state
@@ -30,56 +33,54 @@ public class Game {
      * Setup player name and starter monster
      * Give player 5 capture cards
      */
-    public void init() {
-        String action = Util.validateInput(Arrays.asList("new", "load"), "New or Load? ");
+    public Game(String action) {
         if (action.equalsIgnoreCase("New")) {
-            String name = Util.validateInput("Hello there, I'm Dr. Octopus. What's your name? ");
-            player.setName(name);
-            System.out.println("Hello " + name + ", I study wild monsters.");
-            System.out.println("My life's goal is to gather information on all species of monsters out there.");
-            System.out.println("You can help by taking one of these young monsters with you and hunting down other monsters throughout the world.");
-            String starters = "Please choose your starting monster: " + '\n' + "Tater the Ground type " + '\n' + "Sprinkle the Water type" + '\n' + "Blitz the Electric type";
-            Monster starterChoice = lib.getMonsterByName(Util.validateInput(Arrays.asList("tater", "sprinkle", "blitz"), starters));
-            starterChoice.setNickname(Util.validateInput("What will you name this " + starterChoice.getName()));
-            player.getTeam().addMember(starterChoice);
+            System.out.println("Before name choice");
+            SetupWindow setupWindow = new SetupWindow(player);
+            System.out.println("After name choice");
+
+//            Monster starterChoice = lib.getMonsterByName(Util.validateInput(Arrays.asList("tater", "sprinkle", "blitz"), starters));
+//            starterChoice.setNickname(Util.validateInput("What will you name this " + starterChoice.getName()));
             currState = State.NEW;
             leadMon = player.getTeam().getFirst();
             player.getMonsterpedia().registerMonster(leadMon.getName());
+            //TODO: Transition to play screen
             System.out.println("Have some Capture Cards on me, these are devices that will virtualize wild monsters and add them to your team!");
             player.getBag().addItem("Capture Card", 5);
         } else if (action.equalsIgnoreCase("Load")) {
             loadGame();
             currState = State.LOADED;
         }
+        System.out.println("Before game");
+        GameWindow gameWindow = new GameWindow(player);
+        System.out.println("After game");
     }
 
     /**
      * Generate a random environment then prompt for input
      */
     public void gameLoop() {
-        while(!currState.equals(State.TERMED)) {
-            if(!currState.equals(State.LOADED) && !currState.equals(State.SAVED))
-                currEnv = Util.randomEnv();
+//        while(!currState.equals(State.TERMED)) {
+//            if(!currState.equals(State.LOADED) && !currState.equals(State.SAVED))
+//                currEnv = Util.randomEnv();
 
-            currState = State.RESUMED;
-
-            Action action = Action.NONE;
-            do {
-                System.out.println("You find yourself in the " + currEnv);
-                switch(currEnv) {
-                    case HOSPITAL:
-                        player.getTeam().healTeam();
-                        break;
-                    case SHOP:
-                        shop();
-                        break;
-                    default:
-                        action = performAction(Arrays.asList(Action.HUNT, Action.BAG, Action.TEAM, Action.PLAYER, Action.SAVE, Action.LOAD, Action.LEAVE, Action.EXIT),
-                                "What will you do?(Hunt, Bag, Team, Player, Save, Leave, Exit) ", null);
-                        break;
-                }
-            } while(!currEnv.equals(Environment.HOSPITAL) && !currEnv.equals(Environment.SHOP) && !action.equals(Action.LEAVE) && !action.equals(Action.EXIT) && !action.equals(Action.HUNT));
-        }
+//            Action action = Action.NONE;
+//            do {
+//                System.out.println("You find yourself in the " + currEnv);
+//                switch(currEnv) {
+//                    case HOSPITAL:
+//                        player.getTeam().healTeam();
+//                        break;
+//                    case SHOP:
+//                        shop();
+//                        break;
+//                    default:
+//                        action = performAction(Arrays.asList(Action.HUNT, Action.BAG, Action.TEAM, Action.PLAYER, Action.SAVE, Action.LOAD, Action.LEAVE, Action.EXIT),
+//                                "What will you do?(Hunt, Bag, Team, Player, Save, Leave, Exit) ", null);
+//                        break;
+//                }
+//            } while(!currEnv.equals(Environment.HOSPITAL) && !currEnv.equals(Environment.SHOP) && !action.equals(Action.LEAVE) && !action.equals(Action.EXIT) && !action.equals(Action.HUNT));
+//        }
     }
 
     /**
@@ -126,14 +127,14 @@ public class Game {
                 player.printStats();
                 break;
             case SAVE:
-                saveGame();
+//                saveGame();
                 currState = State.SAVED;
                 break;
             case LOAD:
                 loadGame();
                 currState = State.LOADED;
             case EXIT:
-                savePrompt();
+//                savePrompt();
                 currState = State.TERMED;
             default:
                 break;
@@ -148,7 +149,7 @@ public class Game {
         int lowLvl = player.getTeam().averageLvl(); // average of all team levels
         int highLvl = player.getTeam().highestLvl() + player.getTeam().getSize(); // highest level on team +1 for each member
         try {
-            Monster foundMon = Util.randomMon(lib.getMonstersByEnv(currEnv));
+            Monster foundMon = Util.randomMon(MonLibrary.getMonstersByEnv(currEnv));
             player.getMonsterpedia().registerMonster(foundMon.getName());
             // generate level for wild monster
             int level = (int) Math.min(100, ((Math.random() * (highLvl-lowLvl)) + lowLvl));
@@ -165,16 +166,16 @@ public class Game {
     /**
      * Ask to save the game
      */
-    private void savePrompt() {
-        if (Util.validateInput(Arrays.asList("y", "n"), "Will you save?(Y or N) ").equalsIgnoreCase("Y"))
-            saveGame();
-    }
+//    private void savePrompt() {
+//        if (Util.validateInput(Arrays.asList("y", "n"), "Will you save?(Y or N) ").equalsIgnoreCase("Y"))
+//            saveGame();
+//    }
 
     /**
      * Save the game state by writing to file
      */
-    private void saveGame() {
-        SaveState save = new SaveState(player, currEnv, leadMon);
+    public static void saveGame(Player player, Environment currEnv) {
+        SaveState save = new SaveState(player, currEnv, player.getTeam().getFirst());
         try (FileOutputStream fos   = new FileOutputStream("save.dat");
              ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             oos.writeObject(save);
@@ -187,7 +188,7 @@ public class Game {
     /**
      * Load the game state by reading from save.dat file
      */
-    private void loadGame() {
+    public void loadGame() {
         try (FileInputStream fis   = new FileInputStream("save.dat");
              ObjectInputStream ois = new ObjectInputStream(fis)) {
             SaveState save = (SaveState) ois.readObject();

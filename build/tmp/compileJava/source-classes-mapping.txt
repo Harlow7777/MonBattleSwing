@@ -18,19 +18,31 @@ com/monbattle/items/MaxPotion.java
  com.monbattle.items.MaxPotion
 com/monbattle/growth/Tank.java
  com.monbattle.growth.Tank
+com/monbattle/display/SetupWindow.java
+ com.monbattle.display.SetupWindow
+ com.monbattle.display.SetupWindow$1
+ com.monbattle.display.SetupWindow$2
 com/monbattle/player/Player.java
  com.monbattle.player.Player
 com/monbattle/combat/Battle.java
  com.monbattle.combat.Battle
  com.monbattle.combat.Battle$1
+com/monbattle/Util/Constants.java
+ com.monbattle.Util.Constants
 com/monbattle/items/CaptureCard.java
  com.monbattle.items.CaptureCard
 com/monbattle/enums/Environment.java
  com.monbattle.enums.Environment
+com/monbattle/Util/SwingUtil.java
+ com.monbattle.Util.SwingUtil
 com/monbattle/enums/ExpGroup.java
  com.monbattle.enums.ExpGroup
 com/monbattle/system/SaveState.java
  com.monbattle.system.SaveState
+com/monbattle/inventory/Capture.java
+ com.monbattle.inventory.Capture
+com/monbattle/enums/State.java
+ com.monbattle.enums.State
 com/monbattle/items/SuperPotion.java
  com.monbattle.items.SuperPotion
 com/monbattle/items/Potion.java
@@ -39,29 +51,36 @@ com/monbattle/monster/MonLibrary.java
  com.monbattle.monster.MonLibrary
 com/monbattle/growth/Fast.java
  com.monbattle.growth.Fast
-com/monbattle/system/Game.java
- com.monbattle.system.Game
- com.monbattle.system.Game$1
+com/monbattle/growth/GrowthModel.java
+ com.monbattle.growth.GrowthModel
 com/monbattle/inventory/Item.java
  com.monbattle.inventory.Item
 com/monbattle/items/UltraCaptureCard.java
  com.monbattle.items.UltraCaptureCard
+com/monbattle/monster/Monster.java
+ com.monbattle.monster.Monster
+ com.monbattle.monster.Monster$1
 com/monbattle/Main.java
  com.monbattle.Main
 com/monbattle/shop/Shop.java
  com.monbattle.shop.Shop
+com/monbattle/Util/Timers.java
+ com.monbattle.Util.Timers
+ com.monbattle.Util.Timers$1
 com/monbattle/growth/Dmg.java
  com.monbattle.growth.Dmg
 com/monbattle/enums/Action.java
  com.monbattle.enums.Action
 com/monbattle/enums/Type.java
  com.monbattle.enums.Type
-com/monbattle/inventory/Capture.java
- com.monbattle.inventory.Capture
-com/monbattle/enums/State.java
- com.monbattle.enums.State
-com/monbattle/monster/Monster.java
- com.monbattle.monster.Monster
- com.monbattle.monster.Monster$1
-com/monbattle/growth/GrowthModel.java
- com.monbattle.growth.GrowthModel
+com/monbattle/display/UI.java
+ com.monbattle.display.UI
+com/monbattle/system/Game.java
+ com.monbattle.system.Game
+ com.monbattle.system.Game$1
+com/monbattle/display/GameWindow.java
+ com.monbattle.display.GameWindow
+ com.monbattle.display.GameWindow$1
+ com.monbattle.display.GameWindow$2
+com/monbattle/display/MainPanel.java
+ com.monbattle.display.MainPanel

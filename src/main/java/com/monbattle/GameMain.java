@@ -6,10 +6,7 @@ public class GameMain {
 
     public static void main(String[] args) {
         //Start of Game
-        Game g = new Game();
-        g.init();
-        // Player's turns begin
-        g.gameLoop();
+//        Game g = new Game();
     }
 
 }

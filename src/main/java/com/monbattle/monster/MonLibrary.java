@@ -12,14 +12,11 @@ import java.io.*;
 import java.util.*;
 
 public class MonLibrary {
-    public MonLibrary() {
-        this.initializeLibrary();
-    }
 
     /**
      * Initialize the library with all monster's base stats
      */
-    private void initializeLibrary() {
+    public static void initializeLibrary() {
         try (FileOutputStream fos   = new FileOutputStream("monLibrary.dat");
              ObjectOutputStream oos = new ObjectOutputStream(fos)) {
             Collection<Monster> woi = new ArrayList<>();
@@ -92,7 +89,7 @@ public class MonLibrary {
     /**
      * @return List of all monsters
      */
-    public List<Monster> getAllMonsters() {
+    public static List<Monster> getAllMonsters() {
         try (FileInputStream fis   = new FileInputStream("monLibrary.dat");
              ObjectInputStream ois = new ObjectInputStream(fis)) {
             return (List<Monster>) ois.readObject();
@@ -108,7 +105,7 @@ public class MonLibrary {
      * @return Monster with name matching input parameter
      * @throws NoSuchElementException if there is no monster by the provided name
      */
-    public Monster getMonsterByName(String name) throws NoSuchElementException{
+    public static Monster getMonsterByName(String name) throws NoSuchElementException{
         for(Monster m : getAllMonsters()) {
             if(m.getName().toLowerCase().equals(name.toLowerCase()))
                 return m;
@@ -122,7 +119,7 @@ public class MonLibrary {
      * @return List of Monsters that can show up in provided environment
      * @throws NoSuchElementException if there are no monsters associated with environment
      */
-    public List<Monster> getMonstersByEnv(Environment env) throws NoSuchElementException{
+    public static List<Monster> getMonstersByEnv(Environment env) throws NoSuchElementException{
         List<Monster> monsters = new ArrayList<>();
         for(Monster m : getAllMonsters()) {
             if(m.getEnvironments().contains(env))
