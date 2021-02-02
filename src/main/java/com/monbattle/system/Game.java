@@ -52,7 +52,7 @@ public class Game {
             currState = State.LOADED;
         }
         System.out.println("Before game");
-        GameWindow gameWindow = new GameWindow(player);
+        GameWindow gameWindow = new GameWindow(player, currState);
         System.out.println("After game");
     }
 
@@ -86,14 +86,14 @@ public class Game {
     /**
      * Initialize a new shop and prompt for action
      */
-    private void shop() {
-        System.out.println("Welcome to my shop!");
-        Action action;
-        Shop s = new Shop(player);
-        do {
-            action = performAction(Arrays.asList(Action.BUY, Action.SELL, Action.LEAVE), "Buy, Sell, Leave", s);
-        } while(!action.equals(Action.LEAVE));
-    }
+//    private void shop() {
+//        System.out.println("Welcome to my shop!");
+//        Action action;
+//        Shop s = new Shop(player);
+//        do {
+//            action = performAction(Arrays.asList(Action.BUY, Action.SELL, Action.LEAVE), "Buy, Sell, Leave", s);
+//        } while(!action.equals(Action.LEAVE));
+//    }
 
     /**
      * Prompt user for Action, initiate action
@@ -101,51 +101,51 @@ public class Game {
      * @param prompt String prompt to print
      * @return Action enum selected from List based on user input
      */
-    private Action performAction(List<Action> actions, String prompt, Shop s) {
-        Action action = Util.validateInput(new HashSet<>(actions),
-                prompt);
-
-        switch (action) {
-            case BUY:
-                s.purchaseItem();
-                break;
-            case SELL:
-                s.sellItem(player.openBag(leadMon));
-                break;
-            case HUNT:
-                hunt();
-                break;
-            case BAG:
-                Item choice = player.openBag(leadMon);
-                if(!choice.getName().contains("Capture")) choice.use();
-                else System.out.println("This is not the time to use that");
-                break;
-            case TEAM:
-                leadMon = player.getTeam().selectTeamLead();
-                break;
-            case PLAYER:
-                player.printStats();
-                break;
-            case SAVE:
-//                saveGame();
-                currState = State.SAVED;
-                break;
-            case LOAD:
-                loadGame();
-                currState = State.LOADED;
-            case EXIT:
-//                savePrompt();
-                currState = State.TERMED;
-            default:
-                break;
-        }
-        return action;
-    }
+//    private Action performAction(List<Action> actions, String prompt, Shop s) {
+//        Action action = Util.validateInput(new HashSet<>(actions),
+//                prompt);
+//
+//        switch (action) {
+//            case BUY:
+//                s.purchaseItem();
+//                break;
+//            case SELL:
+//                s.sellItem(player.openBag(leadMon));
+//                break;
+//            case HUNT:
+//                hunt();
+//                break;
+//            case BAG:
+//                Item choice = player.openBag(leadMon);
+//                if(!choice.getName().contains("Capture")) choice.use();
+//                else System.out.println("This is not the time to use that");
+//                break;
+//            case TEAM:
+//                leadMon = player.getTeam().selectTeamLead();
+//                break;
+//            case PLAYER:
+//                player.printStats();
+//                break;
+//            case SAVE:
+////                saveGame();
+//                currState = State.SAVED;
+//                break;
+//            case LOAD:
+//                loadGame();
+//                currState = State.LOADED;
+//            case EXIT:
+////                savePrompt();
+//                currState = State.TERMED;
+//            default:
+//                break;
+//        }
+//        return action;
+//    }
 
     /**
      * Generate random Monster and initiate battle loop
      */
-    private void hunt() {
+    public static Monster hunt(Player player, Environment currEnv) {
         int lowLvl = player.getTeam().averageLvl(); // average of all team levels
         int highLvl = player.getTeam().highestLvl() + player.getTeam().getSize(); // highest level on team +1 for each member
         try {
@@ -156,11 +156,12 @@ public class Game {
             // decrement to represent number of lvl ups needed from lvl 1
             level--;
             if(level > 0) foundMon.levelUp(level);
-            new Battle(foundMon, leadMon, player).battleLoop();
+            return foundMon;
+//            new Battle(foundMon, player.getTeam().getFirst(), player).battleLoop();
         } catch(NoSuchElementException | IllegalArgumentException e) {
-            System.out.println("No monsters here");
+            System.out.println(e.getMessage());
         }
-
+        return null;
     }
 
     /**

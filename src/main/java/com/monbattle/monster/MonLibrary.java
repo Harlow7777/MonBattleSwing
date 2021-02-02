@@ -22,7 +22,7 @@ public class MonLibrary {
             Collection<Monster> woi = new ArrayList<>();
             woi.add(new Monster("Tater",
                     Type.GROUND,
-                    Arrays.asList(Environment.MOUNTAINS, Environment.VOLCANO, Environment.SWAMP),
+                    Arrays.asList(Environment.MOUNTAINS, Environment.VOLCANO, Environment.SWAMP, Environment.PLAINS),
                     6,
                     3,
                     4,
@@ -107,7 +107,7 @@ public class MonLibrary {
      */
     public static Monster getMonsterByName(String name) throws NoSuchElementException{
         for(Monster m : getAllMonsters()) {
-            if(m.getName().toLowerCase().equals(name.toLowerCase()))
+            if(m.getName().equalsIgnoreCase(name))
                 return m;
         }
         throw new NoSuchElementException("No monster by name " + name);

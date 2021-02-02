@@ -5,12 +5,15 @@ import com.monbattle.Util.Timers;
 import com.monbattle.Util.Util;
 import com.monbattle.enums.Action;
 import com.monbattle.enums.Environment;
+import com.monbattle.enums.State;
 import com.monbattle.player.Player;
 import com.monbattle.system.Game;
 
 import javax.imageio.ImageIO;
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -21,16 +24,17 @@ public class GameWindow extends JDialog {
     private Player player;
     private Environment currEnv;
 
-    public GameWindow(Player player) {
+    public GameWindow(Player player, State currState) {
         this.player = player;
         SwingUtil.initializeModal(this, "MonBattle");
-        gameLoop();
+        gameLoop(currState);
     }
 
-    private void gameLoop() {
+    private void gameLoop(State currState) {
         SwingUtil.resetModal(this);
-        //TODO: Check for load action before generating new env
-        currEnv = Util.randomEnv();
+        if(currState != State.LOADED)
+            currEnv = Util.randomEnv();
+        currState = State.RESUMED;
 
         // background image
         //TODO: try extending jpanel and overriding paintComponent
@@ -50,15 +54,14 @@ public class GameWindow extends JDialog {
         //Header text
         JTextPane message = new JTextPane();
         SwingUtil.centerText(message);
-        this.add(message, BorderLayout.NORTH);
+        this.add(message, BorderLayout.SOUTH);
         Timers.displayText("You find yourself in the " + currEnv, message);
+
+        JPanel systemButtonPanel = new JPanel();
 
         switch(currEnv) {
             case HOSPITAL:
                 this.player.getTeam().healTeam();
-                JTextPane update = new JTextPane();
-                SwingUtil.centerText(update);
-                this.add(update, BorderLayout.NORTH);
                 Timers.displayText("Your team is fully healed!", message);
                 break;
             case SHOP:
@@ -67,17 +70,19 @@ public class GameWindow extends JDialog {
                 break;
             default:
                 //setup buttons
-                JPanel buttonPanel = new JPanel();
                 //TODO: add action buttons
-                this.add(buttonPanel, BorderLayout.CENTER);
+                JButton huntButton = new JButton("Hunt");
+                huntButton.addActionListener(e -> {
+                    BattleWindow battleWindow = new BattleWindow(player, currEnv);
+                });
+                systemButtonPanel.add(huntButton);
 //                action = performAction(Arrays.asList(com.monbattle.enums.Action.HUNT, com.monbattle.enums.Action.BAG, com.monbattle.enums.Action.TEAM, com.monbattle.enums.Action.PLAYER, com.monbattle.enums.Action.SAVE, com.monbattle.enums.Action.LOAD, com.monbattle.enums.Action.LEAVE, Action.EXIT),
 //                        "What will you do?(Hunt, Bag, Team, Player, Save, Leave, Exit) ", null);
                 break;
         }
 
-        JPanel systemButtonPanel = new JPanel();
         JButton leaveButton = new JButton(Action.LEAVE.toString());
-        leaveButton.addActionListener(e -> gameLoop());
+        leaveButton.addActionListener(e -> gameLoop(State.RESUMED));
         systemButtonPanel.add(leaveButton);
 
         JButton saveButton = new JButton(Action.SAVE.toString());

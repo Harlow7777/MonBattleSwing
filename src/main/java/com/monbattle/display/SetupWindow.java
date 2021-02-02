@@ -24,11 +24,20 @@ public class SetupWindow extends JDialog {
 
     public SetupWindow(Player player) {
         this.player = player;
+        MonLibrary.initializeLibrary();
         SwingUtil.initializeModal(this, "Choose your name");
+
+        try {
+            JLabel profImg = new JLabel(new ImageIcon(ImageIO.read(new File(SPRITE_DIR + PROF_SPRITE))));
+            this.add(profImg, BorderLayout.CENTER);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         //Wrap message and image in panel to stack vertically
         JPanel p = new JPanel(new BorderLayout());
         JTextPane message = new JTextPane();
+        message.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         SwingUtil.centerText(message);
         p.add(message, BorderLayout.CENTER);
         Timers.displayText("Hello there, I'm Dr. Octopus. What's your name? ", message);
@@ -46,14 +55,7 @@ public class SetupWindow extends JDialog {
             }
         });
         p.add(textField, BorderLayout.SOUTH);
-        this.add(p, BorderLayout.NORTH);
-
-        try {
-            JLabel profImg = new JLabel(new ImageIcon(ImageIO.read(new File(SPRITE_DIR + PROF_SPRITE))));
-            this.add(profImg, BorderLayout.CENTER);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        this.add(p, BorderLayout.SOUTH);
 
         SwingUtil.finalizeWindow(this, 300, 300);
     }
@@ -64,6 +66,7 @@ public class SetupWindow extends JDialog {
         this.setLayout(new GridLayout(2, 1));
 
         JTextPane messageTop = new JTextPane();
+        messageTop.setBorder(BorderFactory.createLineBorder(Color.BLACK));
         SwingUtil.centerText(messageTop);
         String msgString = "Hello " + player.getName() + ", I study wild monsters. " +
                 "My life's goal is to gather information on all species of monsters out there. " +
@@ -103,8 +106,8 @@ public class SetupWindow extends JDialog {
             e.printStackTrace();
         }
         try {
-            JLabel sprinkleImg = new JLabel(new ImageIcon(ImageIO.read(new File(SPRITE_DIR + SPRINKLE_SPRITE))));
-            selectionPanel.add(sprinkleImg);
+            JLabel sprinkImg = new JLabel(new ImageIcon(ImageIO.read(new File(SPRITE_DIR + SPRINK_SPRITE))));
+            selectionPanel.add(sprinkImg);
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -112,23 +115,28 @@ public class SetupWindow extends JDialog {
         //TODO: add event handlers
         JButton taterButton = new JButton("Tater(Ground)");
         JDialog jd = this;
-        taterButton.addActionListener(new ActionListener() {
-            public void actionPerformed(ActionEvent e) {
-                jd.dispose();
-            }
+        taterButton.addActionListener(e -> {
+            player.getTeam().addMember(MonLibrary.getMonsterByName("Tater"));
+            jd.dispose();
         });
-        JButton sprinkleButton = new JButton("Sprinkle(Water)");
+        JButton sprinkButton = new JButton("Sprink(Water)");
+        sprinkButton.addActionListener(e -> {
+            player.getTeam().addMember(MonLibrary.getMonsterByName("Sprink"));
+            jd.dispose();
+        });
         JButton blitzButton = new JButton("Blitz(Electric)");
+        blitzButton.addActionListener(e -> {
+            player.getTeam().addMember(MonLibrary.getMonsterByName("Blitz"));
+            jd.dispose();
+        });
         selectionPanel.add(taterButton);
-        selectionPanel.add(sprinkleButton);
+        selectionPanel.add(sprinkButton);
         selectionPanel.add(blitzButton);
         this.add(selectionPanel);
 
         SwingUtil.finalizeWindow(this, 1000, 1000);
 
-        Monster starter = MonLibrary.getMonsterByName("Blitz");
         //TODO: prompt for nickname
 
-        player.getTeam().addMember(starter);
     }
 }
